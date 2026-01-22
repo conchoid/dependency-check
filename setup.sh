@@ -12,9 +12,10 @@ apt-get install -y \
 
 # DependencyCheck
 cd /opt
-VERSION="12.1.0"
+VERSION="12.1.6"
 DEPENDENCY_CHECK_ZIP="dependency-check-${VERSION}-release.zip"
-DOWNLOAD_URL="https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/${DEPENDENCY_CHECK_ZIP}"
+		  
+DOWNLOAD_URL="https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/${DEPENDENCY_CHECK_ZIP}"
 curl -fsSLO "${DOWNLOAD_URL}"
 curl -fsSLO "${DOWNLOAD_URL}.asc"
 # try to fetch key from multiple servers for better stability.
