@@ -28,9 +28,9 @@ unzip -q "${DEPENDENCY_CHECK_ZIP}"
 chmod a+x /opt/dependency-check/bin/dependency-check.sh
 ln -s /opt/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
 dependency-check --version
-dependency-check --project DependencyCheck --disableCentral --disableAssembly --format JSON --scan /opt/dependency-check/lib
+dependency-check --project DependencyCheck --disableCentral --disableAssembly --format JSON --scan /opt/dependency-check/lib --noupdate || true
 chmod -R 777 /opt/dependency-check/data
-rm dependency-check-report.json
+rm -f dependency-check-report.json
 
 apt-get clean
 rm -rf /var/lib/apt/lists/*

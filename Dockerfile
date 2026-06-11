@@ -3,6 +3,7 @@ FROM debian:trixie-slim
 
 # Preset locale to en_US.UTF-8 and install common tools
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
        locales \
        git \
@@ -10,7 +11,9 @@ RUN apt-get update \
        ssh \
        connect-proxy \
        curl \
+       ca-certificates \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+    && rm -rf /etc/ssh/ssh_host_*_key \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,14 +25,14 @@ ENV CURL_RETRY_OPT='--retry 3 --max-time 180 --retry-max-time 300'
 ENV JVM_PATH=/opt/java/openjdk
 RUN mkdir -p ${JVM_PATH}
 
-# Install openjdk11
+# Install openjdk11 (Eclipse Temurin)
 RUN cd ${JVM_PATH} \
-    && curl $CURL_RETRY_OPT -OL "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.8%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.8_10.tar.gz" \
-    && echo "6e4cead158037cb7747ca47416474d4f408c9126be5b96f9befd532e0a762b47 OpenJDK11U-jdk_x64_linux_hotspot_11.0.8_10.tar.gz" | sha256sum -c - \
-    && tar zxf "OpenJDK11U-jdk_x64_linux_hotspot_11.0.8_10.tar.gz" -C ${JVM_PATH} \
-    && rm "OpenJDK11U-jdk_x64_linux_hotspot_11.0.8_10.tar.gz"
+    && curl $CURL_RETRY_OPT -OL "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.31%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" \
+    && echo "1e9de64586b519c0a981319489257cabedd9457599f3823424a87c3158fbe939 OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" | sha256sum -c - \
+    && tar zxf "OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" -C ${JVM_PATH} \
+    && rm "OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz"
 
-ENV JAVA_HOME=${JVM_PATH}/jdk-11.0.8+10
+ENV JAVA_HOME=${JVM_PATH}/jdk-11.0.31+11
 ENV JENV_ROOT=/opt/jenv
 ENV PATH="${JENV_ROOT}/shims:${JENV_ROOT}/bin:$JAVA_HOME/bin:$PATH"
 
