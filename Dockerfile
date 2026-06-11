@@ -1,4 +1,5 @@
-FROM debian:bookworm
+# Docker Hub: conchoid/dependency-check:v12.2.0-1-trixie
+FROM debian:trixie-slim
 
 # Preset locale to en_US.UTF-8
 RUN apt-get update \
