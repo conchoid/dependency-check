@@ -7,7 +7,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        locales \
        git \
-       git-lfs \
        ssh \
        connect-proxy \
        curl \
@@ -16,6 +15,9 @@ RUN apt-get update \
     && rm -rf /etc/ssh/ssh_host_*_key \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+COPY --from=conchoid/debian:trixie-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+RUN git lfs install
 
 ENV LANG=en_US.utf8
 
