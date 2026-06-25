@@ -1,11 +1,12 @@
-FROM debian:bookworm
+FROM debian:testing-slim
 
 # Preset locale to en_US.UTF-8
 RUN apt-get update \
     && apt-get install -y locales git git-lfs ssh \
     && apt-get install -y --no-install-recommends connect-proxy \
     && rm -rf /var/lib/apt/lists/* \
-    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen
 
 ENV LANG=en_US.utf8
 
@@ -29,3 +30,14 @@ ENV PATH="${JENV_ROOT}/shims:${JENV_ROOT}/bin:$JAVA_HOME/bin:$PATH"
 
 COPY ./setup.sh $SETUP_HOME/
 RUN $SETUP_HOME/setup.sh $SETUP_HOME && rm -f $SETUP_HOME/setup.sh
+
+# Inject pre-built NVD database (managed via Git LFS), then fetch delta only
+COPY ./assets/ /opt/dependency-check/data/
+RUN --mount=type=secret,id=nvd_api_key \
+    NVD_KEY=$(cat /run/secrets/nvd_api_key 2>/dev/null || true) && \
+    if [ -n "$NVD_KEY" ]; then \
+        dependency-check --updateonly --nvdApiKey "$NVD_KEY"; \
+    else \
+        dependency-check --updateonly; \
+    fi && \
+    chmod -R 777 /opt/dependency-check/data
