@@ -31,13 +31,9 @@ ENV PATH="${JENV_ROOT}/shims:${JENV_ROOT}/bin:$JAVA_HOME/bin:$PATH"
 COPY ./setup.sh $SETUP_HOME/
 RUN $SETUP_HOME/setup.sh $SETUP_HOME && rm -f $SETUP_HOME/setup.sh
 
-# Inject pre-built NVD database (managed via Git LFS), then fetch delta only
+# Inject pre-built NVD database (managed via Git LFS).
+# Scans use --noupdate by default; run update-db.sh to refresh and rebuild the image.
 COPY ./assets/ /opt/dependency-check/data/
-RUN --mount=type=secret,id=nvd_api_key \
-    NVD_KEY=$(cat /run/secrets/nvd_api_key 2>/dev/null || true) && \
-    if [ -n "$NVD_KEY" ]; then \
-        dependency-check --updateonly --nvdApiKey "$NVD_KEY"; \
-    else \
-        dependency-check --updateonly; \
-    fi && \
-    chmod -R 777 /opt/dependency-check/data
+RUN chmod -R a+w /opt/dependency-check/data
+RUN dependency-check --version
+

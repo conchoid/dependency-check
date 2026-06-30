@@ -26,7 +26,24 @@ gpg --verify "${DEPENDENCY_CHECK_ZIP}.asc"
 rm "${DEPENDENCY_CHECK_ZIP}.asc"
 unzip -q "${DEPENDENCY_CHECK_ZIP}"
 chmod a+x /opt/dependency-check/bin/dependency-check.sh
-ln -s /opt/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
+
+# Use --noupdate by default so scans rely on the pre-built database baked into
+# the image, avoiding any NVD API/feed access at scan time.
+# Pass --updateOnly, --nvdDatafeed, or --nvdApiKey explicitly to trigger an update.
+# See: https://dependency-check.github.io/DependencyCheck/data/cacheh2.html
+cat > /usr/local/bin/dependency-check << 'WRAPPER'
+#!/bin/sh
+for arg in "$@"; do
+    case "$arg" in
+        --noupdate|--updateOnly|--nvdDatafeed|--nvdDatafeed=*|--nvdApiKey|--nvdApiKey=*)
+            exec /opt/dependency-check/bin/dependency-check.sh "$@"
+            ;;
+    esac
+done
+exec /opt/dependency-check/bin/dependency-check.sh --noupdate "$@"
+WRAPPER
+chmod +x /usr/local/bin/dependency-check
+
 dependency-check --version
 
 apt-get clean
