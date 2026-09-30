@@ -12,7 +12,7 @@ apt-get install -y \
 
 # DependencyCheck
 cd /opt
-VERSION="12.2.2"
+VERSION="13.0.0"
 DEPENDENCY_CHECK_ZIP="dependency-check-${VERSION}-release.zip"
 		  
 DOWNLOAD_URL="https://github.com/dependency-check/DependencyCheck/releases/download/v${VERSION}/${DEPENDENCY_CHECK_ZIP}"
