@@ -16,7 +16,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=conchoid/debian:trixie-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+COPY --from=conchoid/debian:trixie-2-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
 RUN git lfs install
 
 ENV LANG=en_US.utf8
