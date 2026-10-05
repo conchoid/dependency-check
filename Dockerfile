@@ -1,4 +1,4 @@
-# Docker Hub: conchoid/dependency-check:v12.2.0-2-trixie
+# Docker Hub: conchoid/dependency-check:v13.0.0-1-trixie
 FROM debian:trixie-slim
 
 # Preset locale to en_US.UTF-8 and install common tools
@@ -16,7 +16,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=conchoid/debian:trixie-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+COPY --from=conchoid/debian:trixie-2-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
 RUN git lfs install
 
 ENV LANG=en_US.utf8
@@ -29,12 +29,12 @@ RUN mkdir -p ${JVM_PATH}
 
 # Install openjdk11 (Eclipse Temurin)
 RUN cd ${JVM_PATH} \
-    && curl $CURL_RETRY_OPT -OL "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.31%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" \
-    && echo "1e9de64586b519c0a981319489257cabedd9457599f3823424a87c3158fbe939 OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" | sha256sum -c - \
-    && tar zxf "OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz" -C ${JVM_PATH} \
-    && rm "OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz"
+    && curl $CURL_RETRY_OPT -OL "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.32.1%2B1/OpenJDK11U-jdk_x64_linux_hotspot_11.0.32.1_1.tar.gz" \
+    && echo "5c3f68887c325d36d852ba534303e1f5f1f5cae7d6cc1e951d73e0d8e98a058d OpenJDK11U-jdk_x64_linux_hotspot_11.0.32.1_1.tar.gz" | sha256sum -c - \
+    && tar zxf "OpenJDK11U-jdk_x64_linux_hotspot_11.0.32.1_1.tar.gz" -C ${JVM_PATH} \
+    && rm "OpenJDK11U-jdk_x64_linux_hotspot_11.0.32.1_1.tar.gz"
 
-ENV JAVA_HOME=${JVM_PATH}/jdk-11.0.31+11
+ENV JAVA_HOME=${JVM_PATH}/jdk-11.0.32.1+1
 ENV JENV_ROOT=/opt/jenv
 ENV PATH="${JENV_ROOT}/shims:${JENV_ROOT}/bin:$JAVA_HOME/bin:$PATH"
 
