@@ -40,3 +40,6 @@ ENV PATH="${JENV_ROOT}/shims:${JENV_ROOT}/bin:$JAVA_HOME/bin:$PATH"
 
 COPY ./setup.sh $SETUP_HOME/
 RUN $SETUP_HOME/setup.sh $SETUP_HOME && rm -f $SETUP_HOME/setup.sh
+
+# NVD database (odc.mv.db) built locally; see UPDATE_DB.md. No API key is baked in.
+COPY --chmod=777 data/ /opt/dependency-check/data/
